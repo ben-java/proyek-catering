@@ -130,7 +130,7 @@ class FixesRegressionTest extends TestCase
     public function test_pagination_renders_numeric_links(): void
     {
         for ($i = 1; $i <= 25; $i++) {
-            \App\Models\Menu::query()->create([
+            Menu::query()->create([
                 'nama_menu' => "Menu $i",
                 'jenis' => 'harian',
                 'harga_satuan' => 10000,
