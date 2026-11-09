@@ -21,7 +21,7 @@ php artisan serve
 
 Login demo admin:
 
-- Email: `admin@catering.test`
+- Email / username: `admin`
 - Password: `password`
 
 ## Data contoh (Seeder)

@@ -13,11 +13,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Admin
-        User::factory()->create([
-            'name' => 'Admin Catering',
-            'email' => 'admin@catering.test',
-            'password' => bcrypt('password'),
-        ]);
+        User::query()->updateOrCreate(
+            ['email' => 'admin'],
+            ['name' => 'Admin Catering', 'password' => bcrypt('password')]
+        );
 
         // Menu contoh
         $menu = [

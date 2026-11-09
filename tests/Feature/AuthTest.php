@@ -40,4 +40,14 @@ class AuthTest extends TestCase
         $this->post('/login', ['email' => 'a@b.test', 'password' => 'salah'])
             ->assertSessionHasErrors('email');
     }
+
+    public function test_login_accepts_nonemail_identifier(): void
+    {
+        User::factory()->create(['email' => 'admin', 'password' => bcrypt('password')]);
+
+        $this->post('/login', ['email' => 'admin', 'password' => 'password'])
+            ->assertRedirect('/dashboard');
+
+        $this->assertAuthenticated();
+    }
 }

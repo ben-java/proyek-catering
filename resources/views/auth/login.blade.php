@@ -28,8 +28,8 @@
         <form method="POST" action="{{ url('/login') }}">
             @csrf
             <div class="field">
-                <label>Email</label>
-                <input type="email" name="email" value="{{ old('email') }}" required autofocus>
+                <label for="email">Email / username</label>
+                <input id="email" type="text" name="email" value="{{ old('email') }}" placeholder="admin" required autofocus>
             </div>
             <div class="field">
                 <label>Password</label>
@@ -40,7 +40,7 @@
             </label>
             <button type="submit" class="btn btn-primary">Masuk</button>
         </form>
-        <div class="hint mt" style="text-align:center">demo: admin@catering.test / password</div>
+        <div class="hint mt" style="text-align:center">demo: admin / password</div>
         <div style="text-align:center;margin-top:12px;font-size:13px">
             Pelanggan? <a href="{{ url('/pesan') }}">Pesan di sini</a> tanpa login.
         </div>
