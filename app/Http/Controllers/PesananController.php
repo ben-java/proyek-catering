@@ -19,7 +19,7 @@ class PesananController extends Controller
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
             ->when($request->q, function ($q, $c) {
                 $q->where('nama_pemesan', 'like', "%{$c}%")
-                  ->orWhere('no_pesanan', 'like', "%{$c}%");
+                    ->orWhere('no_pesanan', 'like', "%{$c}%");
             })
             ->orderByDesc('created_at')
             ->paginate(20)->withQueryString();

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\DetailPesanan;
 use App\Models\Menu;
 use App\Models\Pesanan;
 use App\Models\User;
@@ -52,7 +53,7 @@ class MenuTest extends TestCase
     {
         $menu = Menu::factory()->create();
         $pesanan = Pesanan::factory()->create();
-        \App\Models\DetailPesanan::create([
+        DetailPesanan::create([
             'pesanan_id' => $pesanan->id,
             'menu_id' => $menu->id,
             'jumlah' => 1,

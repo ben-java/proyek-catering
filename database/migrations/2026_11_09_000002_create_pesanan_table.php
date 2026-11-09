@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('tanggal_kirim');
             $table->decimal('total_harga', 12, 2)->default(0);
             $table->enum('status', ['menunggu_konfirmasi', 'diproses', 'diantar', 'selesai'])
-                  ->default('menunggu_konfirmasi');
+                ->default('menunggu_konfirmasi');
             $table->enum('status_bayar', ['belum_lunas', 'lunas'])->default('belum_lunas');
             $table->text('catatan')->nullable();
             $table->timestamps();
