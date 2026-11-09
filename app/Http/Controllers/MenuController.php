@@ -14,7 +14,7 @@ class MenuController extends Controller
             ->when($request->filled('tersedia'), fn ($q) => $q->where('tersedia', $request->boolean('tersedia')))
             ->when($request->q, fn ($q, $c) => $q->where('nama_menu', 'like', "%{$c}%"))
             ->orderBy('nama_menu')
-            ->paginate(20);
+            ->paginate(20)->withQueryString();
 
         return view('menu.index', compact('menu'));
     }

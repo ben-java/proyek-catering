@@ -3,7 +3,7 @@
 @section('title', 'Detail Pesanan')
 @section('content')
     @php
-        $cls = match($pesanan->status->value){'menunggu_konfirmasi'=>'t-wait','diproses'=>'t-proc','diantar'=>'t-send','selesai'=>'t-done' default=>'t-done'};
+        $cls = match($pesanan->status->value){'menunggu_konfirmasi'=>'t-wait','diproses'=>'t-proc','diantar'=>'t-send','selesai'=>'t-done', default=>'t-done'};
         $order = ['menunggu_konfirmasi','diproses','diantar','selesai'];
         $idx = array_search($pesanan->status->value, $order);
     @endphp

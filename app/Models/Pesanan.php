@@ -7,6 +7,7 @@ use App\Enums\StatusPesanan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Pesanan extends Model
 {
@@ -40,8 +41,12 @@ class Pesanan extends Model
     {
         static::creating(function (self $pesanan) {
             $tanggal = now()->format('Ymd');
-            $urutan = self::whereDate('created_at', now()->toDateString())->count() + 1;
-            $pesanan->no_pesanan = "PO-{$tanggal}-".str_pad((string) $urutan, 3, '0', STR_PAD_LEFT);
+            $prefix = "PO-{$tanggal}-";
+            $max = self::query()
+                ->where('no_pesanan', 'like', $prefix.'%')
+                ->value(DB::raw('MAX(no_pesanan)'));
+            $urutan = $max ? ((int) substr($max, -3)) + 1 : 1;
+            $pesanan->no_pesanan = $prefix.str_pad((string) $urutan, 3, '0', STR_PAD_LEFT);
         });
     }
 

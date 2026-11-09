@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\DetailPesanan;
 use App\Models\Pesanan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class LaporanController extends Controller
 {
     public function porsi(Request $request)
     {
-        $tanggal = $request->tanggal ?? now()->toDateString();
+        $tanggal = $this->validatedDate($request);
 
         $rekap = DetailPesanan::query()
             ->join('pesanan', 'pesanan.id', '=', 'detail_pesanan.pesanan_id')
@@ -28,7 +29,7 @@ class LaporanController extends Controller
 
     public function pendapatan(Request $request)
     {
-        $tanggal = $request->tanggal ?? now()->toDateString();
+        $tanggal = $this->validatedDate($request);
 
         $daftar = Pesanan::tanggal($tanggal)->with('detailPesanan.menu')->orderByDesc('created_at')->get();
 
@@ -39,5 +40,23 @@ class LaporanController extends Controller
         ];
 
         return view('laporan.pendapatan', compact('tanggal', 'daftar', 'statistik'));
+    }
+
+    /**
+     * BUG-15: tanggal malformed tidak boleh memicu HTTP 500.
+     */
+    private function validatedDate(Request $request): string
+    {
+        $value = $request->tanggal;
+
+        if ($value) {
+            try {
+                return Carbon::parse($value)->toDateString();
+            } catch (\Throwable $e) {
+                session()->flash('err', 'Tanggal tidak valid, ditampilkan hari ini.');
+            }
+        }
+
+        return now()->toDateString();
     }
 }
