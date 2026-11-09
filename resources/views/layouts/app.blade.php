@@ -6,6 +6,8 @@
     <meta name="theme-color" content="#1f4d3d">
     <meta name="description" content="Aplikasi pencatatan pesanan usaha catering">
     <link rel="manifest" href="{{ url('/manifest.json') }}">
+    <link rel="icon" href="{{ url('/icons/icon-192.png') }}">
+    <link rel="apple-touch-icon" href="{{ url('/icons/icon-192.png') }}">
     <link rel="stylesheet" href="{{ url('/css/app.css') }}">
     <title>@yield('title', 'CateringKu') — CateringKu</title>
     @stack('head')

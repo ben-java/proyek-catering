@@ -29,12 +29,42 @@ class PesananController extends Controller
 
     public function create()
     {
+        return $this->createView();
+    }
+
+    /** Form publik untuk pelanggan (tanpa login). */
+    public function createPublic()
+    {
+        return $this->createView();
+    }
+
+    private function createView()
+    {
         $menu = Menu::where('tersedia', true)->orderBy('nama_menu')->get();
 
         return view('pesanan.create', compact('menu'));
     }
 
     public function store(Request $request)
+    {
+        $pesanan = $this->persist($request);
+
+        return redirect('/pesanan')->with('ok', "Pesanan {$pesanan->no_pesanan} berhasil dibuat (menunggu konfirmasi).");
+    }
+
+    public function storePublic(Request $request)
+    {
+        $pesanan = $this->persist($request);
+
+        return redirect('/pesan/terima-kasih')->with('ok', "Pesanan {$pesanan->no_pesanan} diterima. Kami akan menghubungi Anda.");
+    }
+
+    public function terimaKasih()
+    {
+        return view('pesanan.terima-kasih');
+    }
+
+    private function persist(Request $request): Pesanan
     {
         $data = $request->validate([
             'nama_pemesan' => ['required', 'string', 'max:100'],
@@ -73,7 +103,7 @@ class PesananController extends Controller
         }
         $pesanan->update(['total_harga' => $total]);
 
-        return redirect('/pesanan')->with('ok', "Pesanan {$pesanan->no_pesanan} berhasil dibuat (menunggu konfirmasi).");
+        return $pesanan;
     }
 
     public function show(Pesanan $pesanan)

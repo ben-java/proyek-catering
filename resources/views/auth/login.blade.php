@@ -41,6 +41,9 @@
             <button type="submit" class="btn btn-primary">Masuk</button>
         </form>
         <div class="hint mt" style="text-align:center">demo: admin@catering.test / password</div>
+        <div style="text-align:center;margin-top:12px;font-size:13px">
+            Pelanggan? <a href="{{ url('/pesan') }}">Pesan di sini</a> tanpa login.
+        </div>
     </div>
 </body>
 </html>

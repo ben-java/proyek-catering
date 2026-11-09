@@ -16,6 +16,12 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
+Route::middleware('guest')->group(function () {
+    Route::get('/pesan', [PesananController::class, 'createPublic'])->name('pesan.create');
+    Route::post('/pesan', [PesananController::class, 'storePublic']);
+    Route::get('/pesan/terima-kasih', [PesananController::class, 'terimaKasih']);
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
