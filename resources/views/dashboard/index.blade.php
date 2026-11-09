@@ -16,6 +16,7 @@
     <div class="grid2">
         <div class="card">
             <h2>Pesanan per Status</h2>
+            <div class="table-card">
             <table>
                 <thead><tr><th>Status</th><th class="text-right">Jumlah</th></tr></thead>
                 <tbody>
@@ -26,6 +27,7 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>
             <div class="mt">
                 <a href="{{ url('/pesanan?tanggal=' . $hariIni) }}" class="btn btn-ghost btn-sm">Lihat pesanan hari ini</a>
             </div>
@@ -33,6 +35,7 @@
 
         <div class="card">
             <h2>Menu Terlaris Hari Ini</h2>
+            <div class="table-card">
             <table>
                 <thead><tr><th>Menu</th><th class="text-right">Porsi</th></tr></thead>
                 <tbody>
@@ -43,6 +46,7 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 @endsection

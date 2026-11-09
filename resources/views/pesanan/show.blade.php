@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <div class="info" style="display:grid;grid-template-columns:150px 1fr;gap:8px 14px;font-size:13.5px;margin-top:18px">
+        <div class="info">
             <div style="color:var(--text-muted)">Pemesan</div><div style="font-weight:600">{{ $pesanan->nama_pemesan }}</div>
             <div style="color:var(--text-muted)">Nomor HP</div><div style="font-weight:600">{{ $pesanan->no_hp }}</div>
             <div style="color:var(--text-muted)">Alamat kirim</div><div style="font-weight:600">{{ $pesanan->alamat_kirim }}</div>
@@ -31,6 +31,7 @@
 
     <div class="card">
         <h2>Rincian Menu</h2>
+        <div class="table-card">
         <table>
             <thead><tr><th>Menu</th><th>Jumlah</th><th style="text-align:right">Harga Satuan</th><th style="text-align:right">Subtotal</th></tr></thead>
             <tbody>
@@ -44,6 +45,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;background:var(--surface-3);border-radius:var(--radius-sm);padding:14px 16px">
             <span style="color:var(--text-muted)">Total harga</span>
             <span style="font-size:22px;font-weight:800;color:var(--accent)">Rp{{ number_format($pesanan->total_harga, 0, ',', '.') }}</span>

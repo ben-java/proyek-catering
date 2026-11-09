@@ -31,22 +31,22 @@
     </form>
 
     <div class="table-card">
-        <table>
+        <table class="t-cards">
             <thead><tr><th>Menu</th><th>Jenis</th><th>Harga</th><th>Status</th><th class="text-right">Aksi</th></tr></thead>
             <tbody>
                 @forelse($menu as $m)
                     <tr>
-                        <td><strong>{{ $m->nama_menu }}</strong></td>
-                        <td>{{ ucwords(str_replace('_',' ',$m->jenis)) }}</td>
-                        <td>Rp{{ number_format($m->harga_satuan, 0, ',', '.') }}</td>
-                        <td>
+                        <td data-label="Menu"><strong>{{ $m->nama_menu }}</strong></td>
+                        <td data-label="Jenis">{{ ucwords(str_replace('_',' ',$m->jenis)) }}</td>
+                        <td data-label="Harga">Rp{{ number_format($m->harga_satuan, 0, ',', '.') }}</td>
+                        <td data-label="Status">
                             @if($m->tersedia)
                                 <span class="tag t-paid"><span class="dot"></span>Tersedia</span>
                             @else
                                 <span class="tag t-done"><span class="dot"></span>Nonaktif</span>
                             @endif
                         </td>
-                        <td>
+                        <td data-label="Aksi">
                             <div class="rowbtns">
                                 <a href="{{ url('/menu/' . $m->id . '/edit') }}" class="btn btn-ghost btn-sm">Edit</a>
                                 <form method="POST" action="{{ url('/menu/' . $m->id . '/tersedia') }}" style="margin:0">

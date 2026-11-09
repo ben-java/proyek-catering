@@ -14,21 +14,19 @@
 </head>
 <body>
     <div class="appbar">
-        <div style="display:flex;align-items:center;gap:8px">
-            <a class="brand" href="{{ url('/') }}">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 3c4 3 6 7 5 12-5 0-9-3-10-9 1-2 3-3 5-3zm-2 18c1-3 3-5 6-6"/></svg>
-                CateringKu
-            </a>
-            @auth
-            <nav class="nav">
-                <a href="{{ url('/dashboard') }}" class="{{ request()->is('dashboard*') ? 'active' : '' }}">Dashboard</a>
-                <a href="{{ url('/pesanan') }}" class="{{ request()->is('pesanan*') ? 'active' : '' }}">Pesanan</a>
-                <a href="{{ url('/menu') }}" class="{{ request()->is('menu*') ? 'active' : '' }}">Menu</a>
-                <a href="{{ url('/laporan/porsi') }}" class="{{ request()->is('laporan*') ? 'active' : '' }}">Laporan</a>
-            </nav>
-            @endauth
-        </div>
-        <div style="display:flex;align-items:center;gap:10px">
+        <a class="brand" href="{{ url('/') }}">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 3c4 3 6 7 5 12-5 0-9-3-10-9 1-2 3-3 5-3zm-2 18c1-3 3-5 6-6"/></svg>
+            CateringKu
+        </a>
+        @auth
+        <nav class="nav">
+            <a href="{{ url('/dashboard') }}" class="{{ request()->is('dashboard*') ? 'active' : '' }}">Dashboard</a>
+            <a href="{{ url('/pesanan') }}" class="{{ request()->is('pesanan*') ? 'active' : '' }}">Pesanan</a>
+            <a href="{{ url('/menu') }}" class="{{ request()->is('menu*') ? 'active' : '' }}">Menu</a>
+            <a href="{{ url('/laporan/porsi') }}" class="{{ request()->is('laporan*') ? 'active' : '' }}">Laporan</a>
+        </nav>
+        @endauth
+        <div class="appbar-actions">
             @auth
             <span class="admin">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>
@@ -36,10 +34,10 @@
             </span>
             <form method="POST" action="{{ url('/logout') }}" style="margin:0">
                 @csrf
-                <button type="submit" class="btn btn-sm" style="background:rgba(255,255,255,.14);color:#fff">Keluar</button>
+                <button type="submit" class="btn btn-sm btn-logout">Keluar</button>
             </form>
             @else
-            <a href="{{ url('/login') }}" class="btn btn-sm" style="background:rgba(255,255,255,.14);color:#fff">Masuk</a>
+            <a href="{{ url('/login') }}" class="btn btn-sm btn-logout">Masuk</a>
             @endauth
         </div>
     </div>

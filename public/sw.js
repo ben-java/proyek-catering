@@ -1,5 +1,7 @@
-const CACHE = 'cateringku-assets-v2';
-// Hanya aset publik statis yang boleh di-cache. Navigasi/halaman TIDAK di-cache
+const CACHE = 'cateringku-assets-v3';
+// Naikkan versi cache ini setiap kali aset statis (terutama /css/app.css)
+// berubah, agar browser lama tidak menampilkan CSS lama walau server sudah
+// diperbarui (Tahap F, mobile-review). Navigasi/halaman TIDAK di-cache
 // agar data privat tidak pernah tersaji dari cache sesudah logout (BUG-01),
 // dan agar perubahan data langsung tercermin (BUG-06).
 const SHELL = [

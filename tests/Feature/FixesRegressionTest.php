@@ -126,4 +126,34 @@ class FixesRegressionTest extends TestCase
             $response->assertSee($no);
         }
     }
+
+    public function test_pagination_renders_numeric_links(): void
+    {
+        for ($i = 1; $i <= 25; $i++) {
+            \App\Models\Menu::query()->create([
+                'nama_menu' => "Menu $i",
+                'jenis' => 'harian',
+                'harga_satuan' => 10000,
+                'tersedia' => true,
+            ]);
+        }
+
+        $html = $this->actingAs($this->admin())
+            ->get('/menu')
+            ->assertOk()
+            ->getContent();
+
+        // Tidak boleh ada URL ter-encode/nested (mis. ?page=http%3A...%3D1)
+        $this->assertStringNotContainsString('page=http', $html);
+
+        preg_match_all('/href="([^"]*)page=\d+"/', $html, $m);
+        $this->assertNotEmpty($m[1], 'pagination harus memuat link halaman numerik');
+
+        foreach ($m[1] as $href) {
+            $this->assertStringNotContainsString('%3A', $href, 'href harus angka, bukan URL ter-encode');
+            $this->assertStringNotContainsString('page=http', $href, 'tidak boleh ada URL page bersarang');
+        }
+
+        $this->assertEquals(1, substr_count($html, 'aria-current="page"'), 'tepat satu halaman aktif');
+    }
 }

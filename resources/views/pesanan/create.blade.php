@@ -70,17 +70,21 @@ function rowHtml(state) {
     });
     const jumlah = state.jumlah || 1;
     return `
-      <div class="row" data-row="${i}" style="display:grid;grid-template-columns:1fr 84px 108px 36px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)">
-        <div><select aria-label="Pilih menu" name="items[${i}][menu_id]" class="row-menu" style="width:100%;padding:9px;border:1.5px solid var(--line-strong);border-radius:9px">${opts}</select></div>
-        <div><input aria-label="Jumlah" type="number" name="items[${i}][jumlah]" class="row-jumlah" min="1" value="${jumlah}" style="width:100%;padding:9px;border:1.5px solid var(--line-strong);border-radius:9px;text-align:center"></div>
-        <div class="row-sub" style="text-align:right;font-weight:700">Rp0</div>
-        <div><button type="button" class="row-del btn btn-warn btn-sm" aria-label="Hapus baris menu" style="width:100%">✕</button></div>
+      <div class="order-item" data-row="${i}">
+        <div class="oi-menu">
+          <select aria-label="Pilih menu" name="items[${i}][menu_id]" class="row-menu">${opts}</select>
+        </div>
+        <div class="oi-ctrl">
+          <div class="oi-qty"><input aria-label="Jumlah" type="number" name="items[${i}][jumlah]" class="row-jumlah" min="1" value="${jumlah}"></div>
+          <div class="oi-sub row-sub">Rp0</div>
+          <button type="button" class="row-del btn btn-warn btn-sm" aria-label="Hapus baris menu">✕</button>
+        </div>
       </div>`;
 }
 
 function update() {
     let total = 0; const lines = [];
-    document.querySelectorAll('#rows .row').forEach(r => {
+    document.querySelectorAll('#rows .order-item').forEach(r => {
         const sel = r.querySelector('.row-menu'); const jum = r.querySelector('.row-jumlah');
         const m = MENU.find(x => x.id == sel.value);
         if (m) {
@@ -109,13 +113,13 @@ function syncFields() {
 function bindRow(row) {
     row.querySelector('.row-menu').addEventListener('change', update);
     row.querySelector('.row-jumlah').addEventListener('input', update);
-    row.querySelector('.row-del').addEventListener('click', e => { e.target.closest('.row').remove(); update(); });
+    row.querySelector('.row-del').addEventListener('click', e => { e.target.closest('.order-item').remove(); update(); });
 }
 
 function addRow(state) {
     const wrap = document.getElementById('rows');
     wrap.insertAdjacentHTML('beforeend', rowHtml(state));
-    bindRow(wrap.querySelector('.row:last-child'));
+    bindRow(wrap.querySelector('.order-item:last-child'));
 }
 
 function initRows() {

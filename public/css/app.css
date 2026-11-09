@@ -24,12 +24,15 @@ a{color:var(--accent);text-decoration:none}
 a:hover{color:var(--accent-strong)}
 
 /* Appbar */
-.appbar{background:linear-gradient(120deg,var(--accent-strong),var(--accent) 60%,var(--brand-grad-stop));color:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 18px rgba(31,77,61,.25)}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;color:#fff}
+.appbar{background:linear-gradient(120deg,var(--accent-strong),var(--accent) 60%,var(--brand-grad-stop));color:#fff;padding:14px 28px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 18px rgba(31,77,61,.25)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;color:#fff;white-space:nowrap;min-width:0}
 .brand:hover{color:#fff}
 .admin{display:flex;align-items:center;gap:8px;font-size:13px;background:rgba(255,255,255,.14);padding:7px 14px;border-radius:100px}
-.nav{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:100px;padding:4px;margin:0 12px}
-.nav a{padding:8px 14px;border-radius:100px;font-size:13.5px;font-weight:600;color:var(--text-secondary)}
+.appbar-actions{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn-logout{background:rgba(255,255,255,.14);color:#fff}
+.btn-logout:hover{background:rgba(255,255,255,.22);color:#fff}
+.nav{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:100px;padding:4px;margin-left:0;min-width:0;align-items:center}
+.nav a{padding:8px 14px;border-radius:100px;font-size:13.5px;font-weight:600;color:var(--text-secondary);white-space:nowrap;display:inline-flex;align-items:center}
 .nav a:hover{background:var(--accent-soft);color:var(--accent)}
 .nav a.active{background:var(--accent);color:#fff}
 
@@ -60,7 +63,8 @@ a:hover{color:var(--accent-strong)}
 .btn-sm{padding:8px 12px;font-size:12.5px;min-height:36px}
 
 /* Table */
-.table-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px;overflow-x:auto}
+.table-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.table-card table{min-width:540px;width:100%}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
 th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface-3)}
 td{padding:13px 12px;border-bottom:1px solid var(--line)}
@@ -113,15 +117,17 @@ td.num{text-align:right;font-weight:700;color:var(--accent);font-variant-numeric
 .text-right{text-align:right}
 .mt{margin-top:16px}
 
-/* Responsif mobile (BUG-10) */
+/* Responsif mobile (mobile-first) */
 @media (max-width: 640px){
-  .appbar{flex-wrap:wrap;padding:12px 14px;gap:8px}
-  .nav{order:3;width:100%;overflow-x:auto;justify-content:flex-start;border-radius:12px;padding:4px;gap:4px}
+  .appbar{flex-wrap:wrap;padding:12px 14px;gap:8px 10px}
+  .appbar-actions{margin-left:auto}
+  .nav{order:3;width:100%;overflow-x:auto;justify-content:flex-start;border-radius:12px;padding:5px;gap:4px;margin-left:0}
+  .nav a{min-height:44px;padding:0 16px}
+  .btn-logout{min-height:44px}
   .wrap{padding:0 12px}
   .grid2,.stats{grid-template-columns:1fr}
   .filterbar{gap:8px}
   .filterbar .field{flex:1 1 100%}
-  table{min-width:540px}
   .row{grid-template-columns:1fr 64px 78px 34px;gap:6px}
   .pagehead h1{font-size:18px}
   .rowbtns{flex-wrap:wrap}
@@ -133,13 +139,45 @@ td.num{text-align:right;font-weight:700;color:var(--accent);font-variant-numeric
 /* Pagination custom (menggantikan default Tailwind) */
 .pagi{margin-top:16px}
 .pagi ul{display:flex;gap:6px;flex-wrap:wrap;list-style:none;margin:0;padding:0;align-items:center}
-.pagi li a,.pagi li span{display:inline-flex;min-width:36px;height:36px;align-items:center;justify-content:center;border:1px solid var(--line-strong);border-radius:9px;font-size:13px;font-weight:600;color:var(--text-secondary);background:var(--surface);text-decoration:none}
+.pagi li a,.pagi li span{display:inline-flex;min-width:44px;height:44px;align-items:center;justify-content:center;border:1px solid var(--line-strong);border-radius:9px;font-size:13px;font-weight:600;color:var(--text-secondary);background:var(--surface);text-decoration:none}
 .pagi li a:hover{border-color:var(--accent);color:var(--accent)}
 .pagi li.active span{background:var(--accent);border-color:var(--accent);color:#fff}
 .pagi li.disabled span{opacity:.45;cursor:not-allowed}
-.pagi .arr{font-size:18px;line-height:1}
+.pagi .arr{font-size:20px;line-height:1}
 @media (max-width:480px){
-  .pagi li a,.pagi li span{min-width:32px;height:32px;font-size:12px}
-  .nav a{padding:7px 10px;font-size:12.5px}
+  .pagi li a,.pagi li span{min-width:44px;height:44px}
   .btn{padding:11px 16px;font-size:13.5px}
+}
+
+/* Detail pesanan: label/nilai */
+.info{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;font-size:13.5px;margin-top:18px;min-width:0}
+@media (max-width:640px){ .info{grid-template-columns:1fr} }
+
+/* Baris item form pesanan (Tahap C) */
+.order-item{display:grid;grid-template-columns:minmax(0,1fr) 84px 108px 44px;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.order-item select,.order-item input{padding:11px 12px;border:1.5px solid var(--line-strong);border-radius:9px;font-size:14px;background:var(--surface);color:var(--text);width:100%;min-width:0}
+.oi-sub{text-align:right;font-weight:700;font-size:13.5px;min-width:0}
+.row-del{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+
+@media (max-width:640px){
+  .order-item{grid-template-columns:1fr;gap:8px;align-items:stretch}
+  .oi-ctrl{display:flex;gap:8px;align-items:center;justify-content:space-between}
+  .oi-qty{width:96px;flex:none}
+  .order-item select,.order-item input{font-size:16px}
+  .oi-sub{flex:1;text-align:left}
+  .row-del{width:44px}
+}
+
+/* Daftar pesanan mobile: tabel -> kartu */
+@media (max-width:640px){
+  .table-card .t-cards{min-width:0;display:block}
+  .t-cards thead{display:none}
+  .t-cards tbody,.t-cards tr{display:block}
+  .t-cards tr{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;padding:4px 2px;background:var(--surface)}
+  .t-cards td{display:flex;justify-content:space-between;align-items:center;gap:14px;border-bottom:0;padding:9px 12px;text-align:left}
+  .t-cards td::before{content:attr(data-label);font-weight:700;color:var(--text-muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;flex:none}
+  .t-cards td .hint{margin-top:2px}
+  .t-cards .rowbtns{justify-content:flex-end}
+  .t-cards td.no{font-weight:800}
+  .t-cards td .tag{white-space:nowrap}
 }

@@ -12,11 +12,11 @@
                 @if (is_string($element))
                     <li class="disabled"><span>{{ $element }}</span></li>
                 @elseif (is_array($element))
-                    @foreach ($element as $page)
+                    @foreach ($element as $page => $url)
                         @if ($page == $paginator->currentPage())
                             <li class="active" aria-current="page"><span>{{ $page }}</span></li>
                         @else
-                            <li><a href="{{ $paginator->url($page) }}">{{ $page }}</a></li>
+                            <li><a href="{{ $url }}" aria-label="Ke halaman {{ $page }}">{{ $page }}</a></li>
                         @endif
                     @endforeach
                 @endif
