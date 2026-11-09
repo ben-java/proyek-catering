@@ -1,0 +1,10 @@
+{
+  "name": "CateringKu",
+  "short_name": "CateringKu",
+  "description": "Aplikasi pencatatan pesanan usaha catering",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbf8f2",
+  "theme_color": "#1f4d3d",
+  "lang": "id"
+}
