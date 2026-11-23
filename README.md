@@ -2,6 +2,17 @@
 
 Aplikasi web (PWA) berbasis **Laravel 13** untuk usaha catering rumahan: mencatat pesanan secara digital menggantikan buku tulis, menampilkan daftar pesanan harian, merekap porsi per menu (dasar belanja bahan), dan merekap pendapatan harian.
 
+## Fitur
+
+- Pencatatan pesanan digital menggantikan buku tulis, dengan nomor pesanan otomatis.
+- Manajemen menu & ketersediaan (harian / nasi kotak / tumpeng).
+- Rincian setiap pesanan dengan snapshot harga saat pemesanan (perubahan harga menu tidak mengubah pesanan lama).
+- Rekap porsi per menu (dasar belanja bahan) dan rekap pendapatan harian.
+- Status pesanan (menunggu konfirmasi → diproses → diantar → selesai) & status bayar (belum lunas / lunas).
+- Hapus pesanan bersifat *soft delete* (`deleted_at`) — data tetap tersimpan untuk audit.
+- Login admin (email/username) + pembatasan laju (rate limit) bawaan.
+- PWA: dapat diinstal & bekerja offline (cache aset).
+
 ## Persyaratan
 
 - **Laravel Herd 1.30.0** (atau PHP ≥ 8.3) — Laravel 13 butuh PHP 8.3+.
@@ -43,6 +54,16 @@ Ganti password admin (minimal 12 karakter, tanpa menulis password ke riwayat she
 php artisan catering:admin-password
 php artisan catering:admin-password 'PasswordBaruYangKuat'   # non-interaktif
 ```
+
+## Testing
+
+```bash
+php artisan test
+```
+
+Suite PHPUnit memakai SQLite `:memory:` (tanpa perlu setup database terpisah). Cakupan:
+- **Feature:** Auth, Menu, Pesanan, Laporan, Keamanan (security), regression (FixesRegressionTest), tabel porsi.
+- **Unit:** Scalar.
 
 ## Sebelum online (checklist produksi)
 
