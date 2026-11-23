@@ -98,10 +98,3 @@ Suite PHPUnit memakai SQLite `:memory:` (tanpa perlu setup database terpisah). C
 - Desain & keputusan UI yang disimpan di dalam repo: `06-ui/VISUAL-2026-11-22.md`.
 - PRD, Requirements, Features, USER_FLOW, Database, API, Arch & ROADMAP dikelola di luar repo (folder docs lokal), sehingga tidak ikut ter-commit.
 
-## Catatan riwayat (2026-11-23)
-
-- Riwayat git ditulis ulang dengan `git-filter-repo` untuk membuang artefak yang tidak semestinya ada di versi: `vendor/`, snapshot pengujian `04-verify/**`, dan mockup `mockup/**`. Seluruh hash commit berubah — clone lama harus di-**re-clone**, jangan `git pull`.
-- Aset berikut dihapus dari HEAD di saat yang sama:
-  - `public/images/nasi-bungkus.jpg` — tidak dipakai (gambar menu dipetakan lewat `config/catering.php`);
-  - `public/favicon.ico` — file kosong (0 byte);
-  - `resources/js/app.js` — stub tak terpakai; input Vite kini hanya `resources/css/app.css`.
