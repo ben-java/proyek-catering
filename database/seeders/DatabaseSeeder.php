@@ -13,10 +13,18 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Admin
+        // Jangan pernah menanam password statis: pakai ADMIN_PASSWORD bila diisi,
+        // kalau tidak buat acak dan tampilkan sekali saat seeding.
+        $adminPassword = env('ADMIN_PASSWORD') ?: \Illuminate\Support\Str::password(20);
+
+        if (strlen((string) $adminPassword) < 12) {
+            throw new \RuntimeException('ADMIN_PASSWORD minimal 12 karakter.');
+        }
         User::query()->updateOrCreate(
             ['email' => 'admin'],
-            ['name' => 'Admin Catering', 'password' => bcrypt('password')]
+            ['name' => 'Admin Catering', 'password' => $adminPassword]
         );
+        $this->command?->warn("Kredensial admin: admin / {$adminPassword}");
 
         // Menu contoh
         $menu = [

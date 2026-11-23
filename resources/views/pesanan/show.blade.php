@@ -10,7 +10,7 @@
 
     <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-            <div style="font-size:20px;font-weight:800;color:var(--accent)">{{ $pesanan->no_pesanan }}</div>
+            <h1 style="font-size:20px;font-weight:800;color:var(--accent);margin:0">{{ $pesanan->no_pesanan }}</h1>
             <div style="display:flex;gap:8px">
                 <span class="tag {{ $cls }}"><span class="dot"></span>{{ $pesanan->status->label() }}</span>
                 <span class="tag {{ $pesanan->status_bayar->value === 'lunas' ? 't-paid' : 't-unpaid' }}">{{ $pesanan->status_bayar->label() }}</span>
@@ -57,8 +57,8 @@
         <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
             <form method="POST" action="{{ url('/pesanan/' . $pesanan->id . '/status') }}" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
                 @csrf
-                <div class="field" style="margin:0"><label>Status pesanan</label>
-                    <select name="status">
+                <div class="field" style="margin:0"><label for="f-status-pesanan">Status pesanan</label>
+                    <select id="f-status-pesanan" name="status">
                         @foreach(\App\Enums\StatusPesanan::cases() as $s)
                             <option value="{{ $s->value }}" @selected($pesanan->status === $s)>{{ $s->label() }}</option>
                         @endforeach
@@ -68,9 +68,14 @@
             </form>
             <form method="POST" action="{{ url('/pesanan/' . $pesanan->id . '/bayar') }}">
                 @csrf
+                @if($pesanan->status_bayar->value !== 'lunas' && (float) $pesanan->total_harga > 0)
+                    <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary);margin-bottom:6px">
+                        <input type="checkbox" name="konfirmasi" value="1" required style="width:26px;height:26px;min-width:26px;margin:0"> Uang sudah diterima
+                    </label>
+                @endif
                 <button class="btn btn-ghost btn-sm" type="submit">{{ $pesanan->status_bayar->value === 'lunas' ? 'Tandai belum lunas' : 'Tandai lunas' }}</button>
             </form>
-            <form method="POST" action="{{ url('/pesanan/' . $pesanan->id) }}" onsubmit="return confirm('Hapus pesanan ini?')">
+            <form method="POST" action="{{ url('/pesanan/' . $pesanan->id) }}" data-confirm="Hapus pesanan ini?">
                 @csrf @method('DELETE')
                 <button class="btn btn-warn btn-sm" type="submit">Hapus</button>
             </form>

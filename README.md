@@ -19,10 +19,39 @@ php artisan serve
 # buka http://localhost:8000
 ```
 
-Login demo admin:
+Login admin:
 
 - Email / username: `admin`
-- Password: `password`
+- Password: `ADMIN_PASSWORD` yang diisi saat seeding. Seeder tidak lagi memakai
+  password statis; kalau `ADMIN_PASSWORD` tidak diisi, password acak dibuat dan
+  ditampilkan sekali di akhir `php artisan db:seed`.
+
+```bash
+ADMIN_PASSWORD='ganti-ini' php artisan migrate:fresh --seed
+```
+
+Akun yang sudah ada di database lama tetap memakai password lamanya — ganti
+lewat `php artisan tinker` bila instalasi tersebut pernah online:
+
+```php
+\App\Models\User::where('email','admin')->update(['password' => bcrypt('password-baru-yang-kuat')]);
+```
+
+Ganti password admin (minimal 12 karakter, tanpa menulis password ke riwayat shell):
+
+```bash
+php artisan catering:admin-password
+php artisan catering:admin-password 'PasswordBaruYangKuat'   # non-interaktif
+```
+
+## Sebelum online (checklist produksi)
+
+- `.env`: `APP_ENV=production`, `APP_DEBUG=false`, `LOG_LEVEL=warning`.
+- `SESSION_SECURE_COOKIE=true`, `SESSION_HTTP_ONLY=true`, `SESSION_SAME_SITE=lax` — hanya jika situs disajikan lewat **HTTPS**.
+- `php.ini`: `expose_php=Off`; arahkan docroot ke folder `public/` (jangan ke root proyek).
+- Aktifkan HTTPS + HSTS di server/web proxy (aplikasi hanya mengirim HSTS bila request sudah HTTPS).
+- `php artisan migrate --force` (menambah kolom `deleted_at`: hapus pesanan bersifat *soft delete*, data tetap tersimpan untuk audit).
+- Batas laju bawaan: login 5/menit per identifier + 30/menit per IP, formulir publik 6/menit + 60/hari per IP.
 
 ## Data contoh (Seeder)
 

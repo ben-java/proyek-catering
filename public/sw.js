@@ -1,4 +1,4 @@
-const CACHE = 'cateringku-assets-v3';
+const CACHE = 'cateringku-assets-v12';
 // Naikkan versi cache ini setiap kali aset statis (terutama /css/app.css)
 // berubah, agar browser lama tidak menampilkan CSS lama walau server sudah
 // diperbarui (Tahap F, mobile-review). Navigasi/halaman TIDAK di-cache
@@ -6,6 +6,7 @@ const CACHE = 'cateringku-assets-v3';
 // dan agar perubahan data langsung tercermin (BUG-06).
 const SHELL = [
   '/css/app.css',
+  '/css/storefront.css',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/manifest.json',
@@ -28,14 +29,28 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
 
+  const isStyle = e.request.destination === 'style';
   const isAsset =
-    e.request.destination === 'style' ||
     e.request.destination === 'image' ||
     e.request.destination === 'font' ||
     url.pathname === '/manifest.json';
 
+  // CSS: network-first. Tema terang harus langsung terpakai walau ada cache lama.
+  if (isStyle) {
+    e.respondWith(
+      fetch(e.request).then((res) => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(e.request, copy));
+        }
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
   if (isAsset) {
-    // cache-first untuk aset statis
+    // cache-first untuk gambar/font/manifest
     e.respondWith(
       caches.match(e.request).then(
         (cached) => cached || fetch(e.request).then((res) => {

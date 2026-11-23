@@ -8,23 +8,23 @@
     </div>
 
     <form class="filterbar" method="GET" action="{{ url('/menu') }}">
-        <div class="field"><label>Jenis</label>
-            <select name="jenis">
+        <div class="field"><label for="f-jenis">Jenis</label>
+            <select id="f-jenis" name="jenis">
                 <option value="">Semua</option>
                 @foreach(['harian'=>'Harian','nasi_kotak'=>'Nasi kotak','tumpeng'=>'Tumpeng'] as $v=>$lbl)
-                    <option value="{{ $v }}" @selected(request('jenis') === $v)>{{ $lbl }}</option>
+                    <option value="{{ $v }}" @selected($jenis === $v)>{{ $lbl }}</option>
                 @endforeach
             </select>
         </div>
-        <div class="field"><label>Tersedia</label>
-            <select name="tersedia">
+        <div class="field"><label for="f-tersedia">Tersedia</label>
+            <select id="f-tersedia" name="tersedia">
                 <option value="">Semua</option>
-                <option value="1" @selected(request('tersedia') === '1')>Ya</option>
-                <option value="0" @selected(request('tersedia') === '0')>Tidak</option>
+                <option value="1" @selected($tersedia === '1')>Ya</option>
+                <option value="0" @selected($tersedia === '0')>Tidak</option>
             </select>
         </div>
-        <div class="field" style="flex:1;min-width:200px"><label>Cari</label>
-            <input type="text" name="q" value="{{ request('q') }}" placeholder="nama menu…" style="width:100%">
+        <div class="field" style="flex:1;min-width:200px"><label for="f-cari">Cari</label>
+            <input id="f-cari" type="text" name="q" value="{{ $cari }}" placeholder="nama menu…" style="width:100%">
         </div>
         <button class="btn btn-ghost" type="submit">Terapkan</button>
         <a href="{{ url('/menu/create') }}" class="btn btn-primary">+ Tambah menu</a>
@@ -53,7 +53,7 @@
                                     @csrf @method('PATCH')
                                     <button class="btn btn-ghost btn-sm" type="submit">{{ $m->tersedia ? 'Nonaktifkan' : 'Aktifkan' }}</button>
                                 </form>
-                                <form method="POST" action="{{ url('/menu/' . $m->id) }}" style="margin:0" onsubmit="return confirm('Hapus menu ini?')">
+                                <form method="POST" action="{{ url('/menu/' . $m->id) }}" style="margin:0" data-confirm="Hapus menu ini?">
                                     @csrf @method('DELETE')
                                     <button class="btn btn-warn btn-sm" type="submit">Hapus</button>
                                 </form>

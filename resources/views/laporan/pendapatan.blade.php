@@ -8,10 +8,11 @@
     </div>
 
     <form class="filterbar" method="GET" action="{{ url('/laporan/pendapatan') }}">
-        <div class="field"><label>Tanggal</label>
-            <input type="date" name="tanggal" value="{{ $tanggal }}">
+        <div class="field"><label for="f-tanggal">Tanggal</label>
+            <input id="f-tanggal" type="date" name="tanggal" value="{{ $tanggal }}">
         </div>
         <button class="btn btn-ghost" type="submit">Tampilkan</button>
+        <button class="btn btn-primary no-print" type="button" id="cetakLaporan">Cetak</button>
         <a href="{{ url('/laporan/porsi?tanggal=' . $tanggal) }}" class="btn btn-ghost">Lihat rekap porsi</a>
     </form>
 
@@ -43,3 +44,9 @@
         </table>
     </div>
 @endsection
+
+@push('scripts')
+    <script nonce="{{ $cspNonce ?? '' }}">
+        document.getElementById('cetakLaporan')?.addEventListener('click', () => window.print());
+    </script>
+@endpush

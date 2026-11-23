@@ -3,23 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#1f4d3d">
     <meta name="description" content="Aplikasi pencatatan pesanan usaha catering">
     <link rel="manifest" href="{{ url('/manifest.json') }}">
     <link rel="icon" href="{{ url('/icons/icon-192.png') }}">
     <link rel="apple-touch-icon" href="{{ url('/icons/icon-192.png') }}">
-    <link rel="stylesheet" href="{{ url('/css/app.css') }}">
+    <link rel="stylesheet" href="{{ url('/css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
     <title>@yield('title', 'CateringKu') — CateringKu</title>
     @stack('head')
 </head>
 <body>
-    <div class="appbar">
+    <a href="#main-content" class="skip-link">Lewati ke konten utama</a>
+    <header class="appbar">
         <a class="brand" href="{{ url('/') }}">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 3c4 3 6 7 5 12-5 0-9-3-10-9 1-2 3-3 5-3zm-2 18c1-3 3-5 6-6"/></svg>
-            CateringKu
+            @include('layouts.brand-mark')
+            <span>CateringKu</span>
         </a>
         @auth
-        <nav class="nav">
+        <nav class="nav" aria-label="Navigasi utama">
             <a href="{{ url('/dashboard') }}" class="{{ request()->is('dashboard*') ? 'active' : '' }}">Dashboard</a>
             <a href="{{ url('/pesanan') }}" class="{{ request()->is('pesanan*') ? 'active' : '' }}">Pesanan</a>
             <a href="{{ url('/menu') }}" class="{{ request()->is('menu*') ? 'active' : '' }}">Menu</a>
@@ -40,17 +42,17 @@
             <a href="{{ url('/login') }}" class="btn btn-sm btn-logout">Masuk</a>
             @endauth
         </div>
-    </div>
+    </header>
 
-    <main class="wrap">
+    <main class="wrap" id="main-content" tabindex="-1">
         @if(session('ok'))
-            <div class="alert alert-ok">{{ session('ok') }}</div>
+            <div class="alert alert-ok" role="status">{{ session('ok') }}</div>
         @endif
         @if(session('err'))
-            <div class="alert alert-err">{{ session('err') }}</div>
+            <div class="alert alert-err" role="alert">{{ session('err') }}</div>
         @endif
         @if($errors->any())
-            <div class="alert alert-err">
+            <div class="alert alert-err" role="alert">
                 <strong>Periksa kembali isian:</strong>
                 <ul class="list">
                     @foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach
@@ -61,10 +63,24 @@
         @yield('content')
     </main>
 
-    <script>
+    <footer class="app-footer">
+        <span><strong>CateringKu</strong> · Kelola pesanan, sajikan kebahagiaan.</span>
+        <span>Ruang kerja usaha catering Anda</span>
+    </footer>
+
+    <script nonce="{{ $cspNonce ?? '' }}">
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
         }
+
+        // Konfirmasi aksi destruktif. Atribut onsubmit inline diblokir CSP,
+        // jadi listener dipasang dari skrip ber-nonce.
+        document.addEventListener('submit', (event) => {
+            const form = event.target.closest('form[data-confirm]');
+            if (form && !window.confirm(form.dataset.confirm)) {
+                event.preventDefault();
+            }
+        });
     </script>
     @stack('scripts')
 </body>

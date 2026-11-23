@@ -2,24 +2,30 @@
 
 @section('title', 'Buat Pesanan')
 @section('content')
-    <div class="pagehead">
+    @if(request()->is('pesan'))
+        @push('head')
+            <link rel="stylesheet" href="{{ url('/css/storefront.css') }}?v={{ filemtime(public_path('css/storefront.css')) }}">
+        @endpush
+        @include('pesanan.storefront')
+    @endif
+    <div class="pagehead {{ request()->is('pesan') ? 'storefront-form-title' : '' }}">
         <h1>Buat Pesanan</h1>
         <div class="sub">Isi data pemesan dan rincian menu — periksa ringkasan sebelum simpan</div>
     </div>
 
-    <form method="POST" action="{{ $formAction }}" id="formPesanan">
+    <form method="POST" action="{{ $formAction }}" id="formPesanan" class="{{ request()->is('pesan') ? 'shop-order-form' : '' }}">
         @csrf
 
         <div class="card">
             <h2>1 · Data Pemesan</h2>
             <div class="grid2">
-                <div class="field"><label for="nama_pemesan">Nama pemesan *</label><input id="nama_pemesan" type="text" name="nama_pemesan" value="{{ old('nama_pemesan') }}" required></div>
-                <div class="field"><label for="no_hp">Nomor HP *</label><input id="no_hp" type="tel" name="no_hp" value="{{ old('no_hp') }}" required placeholder="08xxxxxxxxxx"></div>
+                <div class="field"><label for="nama_pemesan">Nama pemesan *</label><input id="nama_pemesan" type="text" name="nama_pemesan" value="{{ \App\Support\Scalar::str(old('nama_pemesan')) }}" required></div>
+                <div class="field"><label for="no_hp">Nomor HP *</label><input id="no_hp" type="tel" name="no_hp" value="{{ \App\Support\Scalar::str(old('no_hp')) }}" required placeholder="08xxxxxxxxxx"></div>
             </div>
-            <div class="field"><label for="alamat_kirim">Alamat kirim *</label><textarea id="alamat_kirim" name="alamat_kirim" rows="2" required>{{ old('alamat_kirim') }}</textarea></div>
+            <div class="field"><label for="alamat_kirim">Alamat kirim *</label><textarea id="alamat_kirim" name="alamat_kirim" rows="2" required>{{ \App\Support\Scalar::str(old('alamat_kirim')) }}</textarea></div>
             <div class="grid2">
-                <div class="field"><label for="tanggal_kirim">Tanggal kirim *</label><input id="tanggal_kirim" type="date" name="tanggal_kirim" value="{{ old('tanggal_kirim', now()->addDay()->format('Y-m-d')) }}" required></div>
-                <div class="field"><label for="catatan">Catatan (opsional)</label><input id="catatan" type="text" name="catatan" value="{{ old('catatan') }}"></div>
+                <div class="field"><label for="tanggal_kirim">Tanggal kirim *</label><input id="tanggal_kirim" type="date" min="{{ now()->addDay()->format('Y-m-d') }}" name="tanggal_kirim" value="{{ \App\Support\Scalar::str(old('tanggal_kirim', now()->addDay()->format('Y-m-d'))) }}" required></div>
+                <div class="field"><label for="catatan">Catatan (opsional)</label><input id="catatan" type="text" name="catatan" value="{{ \App\Support\Scalar::str(old('catatan')) }}"></div>
             </div>
             <div class="hint">Pesanan dibuka minimal 1 hari sebelum tanggal pengiriman.</div>
         </div>
@@ -35,7 +41,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card order-summary-card">
             <div class="confirm">
                 <h3 style="margin:0 0 12px;font-size:14px;color:var(--accent)">✔ Ringkasan konfirmasi — periksa sebelum simpan</h3>
                 <div class="rowc"><span class="k">Pemesan</span><span class="v" id="sumName">—</span></div>
@@ -54,21 +60,23 @@
 @endsection
 
 @push('scripts')
-<script>
-const MENU = {!! $menu->map(fn($m) => ['id'=>$m->id,'nama'=>$m->nama_menu,'harga' => floatval($m->harga_satuan)])->toJson() !!};
+<script nonce="{{ $cspNonce ?? '' }}">
+const MENU = {{ Illuminate\Support\Js::from($menu->map(fn($m) => ['id'=>$m->id,'nama'=>$m->nama_menu,'harga' => floatval($m->harga_satuan)])) }};
 // BUG-11: pulihkan item lama saat validasi gagal
-const OLD_ITEMS = {!! json_encode(old('items', [])) !!};
+const OLD_ITEMS = {{ Illuminate\Support\Js::from(old('items', [])) }};
+const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[char]));
 const fmt = n => 'Rp' + n.toLocaleString('id-ID');
 let rowCount = 0;
+let feedbackTimer;
 
 function rowHtml(state) {
     const i = rowCount++;
     state = state || {};
     let opts = '<option value="">— pilih menu —</option>';
     MENU.forEach(m => {
-        opts += `<option value="${m.id}" data-harga="${m.harga}" ${String(m.id) === String(state.menu_id) ? 'selected' : ''}>${m.nama} — ${fmt(m.harga)}</option>`;
+        opts += `<option value="${m.id}" data-harga="${m.harga}" ${String(m.id) === String(state.menu_id) ? 'selected' : ''}>${escapeHtml(m.nama)} — ${fmt(m.harga)}</option>`;
     });
-    const jumlah = state.jumlah || 1;
+    const jumlah = Math.max(1, parseInt(state.jumlah, 10) || 1);
     return `
       <div class="order-item" data-row="${i}">
         <div class="oi-menu">
@@ -119,14 +127,17 @@ function bindRow(row) {
 function addRow(state) {
     const wrap = document.getElementById('rows');
     wrap.insertAdjacentHTML('beforeend', rowHtml(state));
-    bindRow(wrap.querySelector('.order-item:last-child'));
+    const row = wrap.querySelector('.order-item:last-child');
+    bindRow(row);
+    return row;
 }
 
 function initRows() {
     document.getElementById('rows').innerHTML = '';
     rowCount = 0;
-    if (OLD_ITEMS && OLD_ITEMS.length) {
-        OLD_ITEMS.forEach(it => addRow(it));
+    const previousItems = Object.values(OLD_ITEMS || {});
+    if (previousItems.length) {
+        previousItems.forEach(it => addRow(it));
     } else {
         addRow(null);
     }
@@ -135,19 +146,49 @@ function initRows() {
 document.getElementById('addRow').addEventListener('click', () => addRow(null));
 
 // BUG-12: reset harus mengosongkan semuanya dan sinkronkan ulang
-document.getElementById('formPesanan').addEventListener('reset', () => {
+document.getElementById('formPesanan').addEventListener('reset', event => {
+    event.preventDefault();
     document.querySelector('[name=nama_pemesan]').value = '';
     document.querySelector('[name=no_hp]').value = '';
     document.querySelector('[name=alamat_kirim]').value = '';
     document.querySelector('[name=tanggal_kirim]').value = '';
     document.querySelector('[name=catatan]').value = '';
-    initRows();
+    document.getElementById('rows').replaceChildren();
+    rowCount = 0;
+    addRow(null);
     update();
 });
 
 ['nama_pemesan','no_hp','alamat_kirim','tanggal_kirim','catatan'].forEach(n => {
     const el = document.querySelector(`[name=${n}]`);
     if (el) el.addEventListener('input', syncFields);
+});
+
+document.querySelectorAll('.add-menu').forEach(button => {
+    button.addEventListener('click', () => {
+        const menuId = button.dataset.menuId;
+        const item = MENU.find(m => String(m.id) === menuId);
+        if (!item) return;
+        const rows = [...document.querySelectorAll('#rows .order-item')];
+        let row = rows.find(r => r.querySelector('.row-menu').value === menuId);
+        if (row) {
+            const quantity = row.querySelector('.row-jumlah');
+            quantity.value = (parseInt(quantity.value, 10) || 1) + 1;
+        } else {
+            row = rows.find(r => !r.querySelector('.row-menu').value);
+            if (row) row.querySelector('.row-menu').value = menuId;
+            else row = addRow({menu_id: menuId, jumlah: 1});
+        }
+        update();
+        const feedback = document.getElementById('menu-feedback');
+        if (feedback) {
+            feedback.textContent = `${item.nama} ditambahkan. Atur porsi di formulir pesanan.`;
+            clearTimeout(feedbackTimer);
+            feedbackTimer = setTimeout(() => { feedback.textContent = ''; }, 4000);
+        }
+        button.classList.remove('menu-added');
+        requestAnimationFrame(() => button.classList.add('menu-added'));
+    });
 });
 
 initRows();

@@ -10,7 +10,7 @@
     <div class="card" style="max-width:640px">
         <form method="POST" action="{{ url('/menu') }}">
             @csrf
-            <div class="field"><label>Nama menu *</label><input type="text" name="nama_menu" value="{{ old('nama_menu') }}" required></div>
+            <div class="field"><label>Nama menu *</label><input type="text" name="nama_menu" value="{{ \App\Support\Scalar::str(old('nama_menu')) }}" required></div>
             <div class="field"><label>Jenis *</label>
                 <select name="jenis" required>
                     <option value="">— pilih —</option>
@@ -19,7 +19,7 @@
                     <option value="tumpeng" @selected(old('jenis') === 'tumpeng')>Tumpeng</option>
                 </select>
             </div>
-            <div class="field"><label>Harga satuan (Rp) *</label><input type="number" name="harga_satuan" min="0" step="500" value="{{ old('harga_satuan') }}" required></div>
+            <div class="field"><label>Harga satuan (Rp) *</label><input type="number" name="harga_satuan" min="0" step="500" value="{{ \App\Support\Scalar::str(old('harga_satuan')) }}" required></div>
             <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-secondary);margin-bottom:18px">
                 <input type="checkbox" name="tersedia" value="1" checked style="width:auto"> Tersedia untuk dipesan
             </label>

@@ -8,24 +8,27 @@
                 <h1>Daftar Pesanan Harian</h1>
                 <div class="sub">Semua pesanan pada tanggal terpilih, dalam satu halaman</div>
             </div>
-            <a href="{{ url('/pesanan/create') }}" class="btn btn-primary">+ Buat pesanan</a>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <a href="{{ url('/pesanan/export') }}{{ $tanggal !== '' ? '?tanggal=' . urlencode($tanggal) : '' }}" class="btn btn-ghost">Ekspor CSV</a>
+                <a href="{{ url('/pesanan/create') }}" class="btn btn-primary">+ Buat pesanan</a>
+            </div>
         </div>
     </div>
 
     <form class="filterbar" method="GET" action="{{ url('/pesanan') }}">
-        <div class="field"><label>Tanggal kirim</label>
-            <input type="date" name="tanggal" value="{{ request('tanggal') }}">
+        <div class="field"><label for="f-tanggal">Tanggal kirim</label>
+            <input id="f-tanggal" type="date" name="tanggal" value="{{ $tanggal }}">
         </div>
-        <div class="field"><label>Status</label>
-            <select name="status">
+        <div class="field"><label for="f-status">Status</label>
+            <select id="f-status" name="status">
                 <option value="">Semua status</option>
                 @foreach(\App\Enums\StatusPesanan::cases() as $s)
-                    <option value="{{ $s->value }}" @selected(request('status') === $s->value)>{{ $s->label() }}</option>
+                    <option value="{{ $s->value }}" @selected($status === $s->value)>{{ $s->label() }}</option>
                 @endforeach
             </select>
         </div>
-        <div class="field" style="flex:1;min-width:180px"><label>Cari</label>
-            <input type="text" name="q" value="{{ request('q') }}" placeholder="Nama pemesan / nomor pesanan…" style="width:100%">
+        <div class="field" style="flex:1;min-width:180px"><label for="f-cari">Cari</label>
+            <input id="f-cari" type="text" name="q" value="{{ $cari }}" placeholder="Nama pemesan / nomor pesanan…" style="width:100%">
         </div>
         <button class="btn btn-ghost" type="submit">Terapkan</button>
     </form>

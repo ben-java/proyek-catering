@@ -1,0 +1,1 @@
+<svg class="brand-mark" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 23h22M8 21a8 8 0 0 1 16 0M16 13v-2M14 10h4M9 27h14"/><path d="M11 5c0 1-1 1.5-1 2.5M20 4c0 1-1 1.5-1 2.5"/></svg>

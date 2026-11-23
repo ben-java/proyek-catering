@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Application;
+
+// Hilangkan header versi PHP (efektif di php-fpm/Apache; php -S tetap menambahkannya sendiri).
+header_remove('X-Powered-By');
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));

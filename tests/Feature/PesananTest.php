@@ -36,6 +36,19 @@ class PesananTest extends TestCase
         ], $overrides);
     }
 
+    public function test_customer_storefront_is_visible_to_guests(): void
+    {
+        $this->get('/pesan')->assertOk()->assertSee('Meja penuh rasa.');
+    }
+
+    public function test_customer_storefront_is_visible_to_signed_in_admin(): void
+    {
+        $this->actingAs($this->admin())
+            ->get('/pesan')->assertOk()->assertSee('Meja penuh rasa.');
+
+        $this->get('/pesanan/create')->assertOk()->assertDontSee('Meja penuh rasa.');
+    }
+
     public function test_guest_cannot_access_order_list(): void
     {
         $this->get('/pesanan')->assertRedirect('/login');
