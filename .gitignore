@@ -26,3 +26,13 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Lokal-pribadi (tidak untuk dipublikasikan)
+.claude/
+CLAUDE.md
+boost.json
+.mcp.json
+05-security/
+mockup/
+fixed-cached-form.png
+storefront-after.png
