@@ -1,4 +1,4 @@
-const CACHE = 'cateringku-assets-v12';
+const CACHE = 'cateringku-assets-v14';
 // Naikkan versi cache ini setiap kali aset statis (terutama /css/app.css)
 // berubah, agar browser lama tidak menampilkan CSS lama walau server sudah
 // diperbarui (Tahap F, mobile-review). Navigasi/halaman TIDAK di-cache
