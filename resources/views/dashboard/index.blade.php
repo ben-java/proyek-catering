@@ -17,6 +17,97 @@
         <div class="stat stat-alert"><div class="stat-icon">!</div><div><div class="lbl">Belum lunas</div><div class="num warn">{{ $statistik['belum_lunas'] }}</div></div></div>
     </div>
 
+    @php
+        $jumlahHariIni = $pesananDikerjakan->filter(fn ($p) => $p->tanggal_kirim?->toDateString() === $hariIni)->count();
+        $jumlahBesok = $pesananDikerjakan->filter(fn ($p) => $p->tanggal_kirim?->toDateString() === $besok)->count();
+    @endphp
+
+    <div class="card">
+        <div class="card-head">
+            <div>
+                <h2 id="pesanan-dikerjakan-title">Pesanan yang Harus Dikerjakan</h2>
+                <div class="sub-inline">Jadwal kirim hari ini &amp; besok yang belum selesai</div>
+            </div>
+            <div class="shortcut-row" aria-label="Shortcut pesanan">
+                <a href="{{ url('/pesanan?tanggal=' . $hariIni) }}" class="btn btn-ghost btn-sm">Pesanan hari ini ({{ $jumlahHariIni }})</a>
+                <a href="{{ url('/pesanan?tanggal=' . $besok) }}" class="btn btn-ghost btn-sm">Pesanan besok ({{ $jumlahBesok }})</a>
+            </div>
+        </div>
+
+        <div class="table-card" tabindex="0" role="region" aria-labelledby="pesanan-dikerjakan-title">
+            <table class="t-cards t-dashboard-todo">
+                <thead>
+                    <tr>
+                        <th>Jadwal</th>
+                        <th>No. Pesanan</th>
+                        <th>Pemesan</th>
+                        <th>Menu</th>
+                        <th>Status</th>
+                        <th class="text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($pesananDikerjakan as $p)
+                        @php
+                            $isHariIni = $p->tanggal_kirim?->toDateString() === $hariIni;
+                            $cls = match($p->status->value) {
+                                'menunggu_konfirmasi' => 't-wait',
+                                'diproses' => 't-proc',
+                                'diantar' => 't-send',
+                                default => 't-done',
+                            };
+                            $nextAction = match($p->status->value) {
+                                'menunggu_konfirmasi' => ['status' => 'diproses', 'label' => 'Proses'],
+                                'diproses' => ['status' => 'diantar', 'label' => 'Antar'],
+                                'diantar' => ['status' => 'selesai', 'label' => 'Selesai'],
+                                default => null,
+                            };
+                            $ringkasanMenu = $p->detailPesanan
+                                ->map(fn ($d) => $d->jumlah . '× ' . ($d->menu?->nama_menu ?? 'Menu'))
+                                ->implode(', ');
+                        @endphp
+                        <tr>
+                            <td class="nowrap" data-label="Jadwal">
+                                <span class="tag {{ $isHariIni ? 't-unpaid' : 't-proc' }}">{{ $isHariIni ? 'Hari ini' : 'Besok' }}</span>
+                                <div class="hint">{{ $p->tanggal_kirim?->translatedFormat('d M') }}</div>
+                            </td>
+                            <td class="no nowrap" data-label="No. Pesanan">
+                                <a href="{{ url('/pesanan/' . $p->id) }}">{{ $p->no_pesanan }}</a>
+                            </td>
+                            <td class="col-pemesan" data-label="Pemesan">
+                                {{ $p->nama_pemesan }}
+                                <div class="hint">{{ $p->no_hp }}</div>
+                            </td>
+                            <td class="col-menu" data-label="Menu">
+                                {{ $ringkasanMenu !== '' ? $ringkasanMenu : '—' }}
+                                @if($p->catatan)
+                                    <div class="hint">Catatan: {{ $p->catatan }}</div>
+                                @endif
+                            </td>
+                            <td class="nowrap" data-label="Status">
+                                <span class="tag {{ $cls }}"><span class="dot"></span>{{ $p->status->label() }}</span>
+                            </td>
+                            <td class="nowrap" data-label="Aksi">
+                                <div class="rowbtns">
+                                    @if($nextAction)
+                                        <form method="POST" action="{{ url('/pesanan/' . $p->id . '/status') }}">
+                                            @csrf
+                                            <input type="hidden" name="status" value="{{ $nextAction['status'] }}">
+                                            <button type="submit" class="btn btn-primary btn-sm">{{ $nextAction['label'] }}</button>
+                                        </form>
+                                    @endif
+                                    <a href="{{ url('/pesanan/' . $p->id) }}" class="btn btn-ghost btn-sm">Detail</a>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="6">Tidak ada pesanan yang harus dikerjakan untuk hari ini dan besok.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="grid2">
         <div class="card">
             <h2>Pesanan per Status</h2>
